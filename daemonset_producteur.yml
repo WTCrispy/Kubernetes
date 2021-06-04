@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: producteur
+spec:
+  selector:
+    matchLabels:
+      name: daemon
+  template:
+    metadata:
+      labels:
+        name: daemon
+    spec:
+      containers:
+      - name: daemon
+        image: alpine:3.12
+        command: ["sh","-c"]
+        args:
+          - while true;
+            do
+              echo "`date`" > "/web/index.html";
+              sleep 60;
+            done
+        volumeMounts:
+        - name: web
+          mountPath: /web
+      volumes:
+      - name: web
+        hostPath: 
+          path: /web
+          type: DirectoryOrCreate
